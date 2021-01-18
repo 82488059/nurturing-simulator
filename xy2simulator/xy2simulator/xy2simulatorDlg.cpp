@@ -254,6 +254,7 @@ void Cxy2simulatorDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_JIANZHU, m_jishu[em_jianzhu]);
 	DDX_Text(pDX, IDC_EDIT_ZONGJIAO, m_jishu[em_zongjiao]);
 	DDX_Text(pDX, IDC_EDIT_QISHU, m_jishu[em_qishu]);
+	DDX_Control(pDX, IDC_LIST2, m_list2);
 }
 
 BEGIN_MESSAGE_MAP(Cxy2simulatorDlg, CDialogEx)
@@ -342,6 +343,8 @@ BOOL Cxy2simulatorDlg::OnInitDialog()
 	memset(m_jishu, 0, sizeof(m_jishu));
 	// 合计数据
 	HejiShuju();
+	// 说明
+	InitList2();
 
 	UpdateData(FALSE);
 
@@ -421,6 +424,8 @@ void Cxy2simulatorDlg::InitList1()
 	m_list.InsertColumn(em_jinqian, _T("金钱"), LVCFMT_CENTER, 50);
 	m_list.InsertColumn(em_qigai, _T("乞丐"), LVCFMT_CENTER, 50);
 	m_list.InsertColumn(em_caozuo, _T("操作"), LVCFMT_CENTER, 80);
+	m_list.InsertColumn(em_shuoming, _T("解锁说明"), LVCFMT_CENTER, 80);
+	
 
 	int ny = 6;
 	int nm = 0;
@@ -435,13 +440,125 @@ void Cxy2simulatorDlg::InitList1()
 		s.Format(_T("%d"), m+1);
 		m_list.SetItemText(m, em_xuhao, s);
 	}
+
+}
+
+void Cxy2simulatorDlg::InitList2()
+{
+	DWORD dwStyle = m_list2.GetExtendedStyle();
+	dwStyle |= LVS_EX_FULLROWSELECT;// 选中某行使整行高亮（仅仅适用与report 风格的listctrl ） 
+	dwStyle |= LVS_EX_GRIDLINES;// 网格线（仅仅适用与report 风格的listctrl ） 
+	//dwStyle |= LVS_EX_CHECKBOXES;//item 前生成checkbox 控件 
+	m_list2.SetExtendedStyle(dwStyle); // 设置扩展风格 
+	//设置列表控件的报表显示方式
+	//m_list.ModifyStyle(LVS_ICON | LVS_SMALLICON | LVS_LIST, LVS_REPORT);
+
+	CString szText[][em_list2Max] = {
+		// 学习
+		{_T("学习"),_T("音律"),_T("直接解锁"),_T("气质+24,金-120")},
+		{_T("学习"),_T("美术"),_T("直接解锁"),_T("耐力+24,金-120")},
+		{_T("学习"),_T("诗文"),_T("直接解锁"),_T("智力+24,金-120")},
+		{_T("学习"),_T("武术"),_T("直接解锁"),_T("内力+24,金-120")},
+		{_T("学习"),_T("舞蹈"),_T("音律30次"),_T("气质+22,耐力+2,智力+2,金-120")},
+		{_T("学习"),_T("建筑"),_T("美术30次"),_T("耐力+22,内力+2,智力+2,金-120")},
+		{_T("学习"),_T("宗教"),_T("诗文30次"),_T("智力+22,气质+2,内力+2,金-120")},
+		{_T("学习"),_T("骑术"),_T("武术30次"),_T("内力+22,耐力+2,气质+2,金-120")},
+		// 工作
+		{_T("工作"),_T("伴读"),_T("6岁直接解锁"),_T("金+30 叛逆-2")},
+		{_T("工作"),_T("做家务"),_T("6岁直接解锁"),_T("金+10 叛逆+22 气质-1")},
+		{_T("工作"),_T("御膳房火工"),_T("7岁,到皇宫解锁"),_T("金+30")},
+		{_T("工作"),_T("实习水手"),_T("7岁,名气>10,到海边解锁"),_T("金+50")},
+		{_T("工作"),_T("驿站收银"),_T("8岁,名气>30,到野外解锁"),_T("金+80 ")},
+		{_T("工作"),_T("太医院煎药"),_T("9岁,道德>50,到太医院解锁"),_T("金+100")},
+		{_T("工作"),_T("给阴魂引路"),_T("10岁,名气>70,气质>70,到地府解锁"),_T("金+120")},
+		{_T("工作"),_T("黑市小贩"),_T("12岁,叛逆>90,到黑市解锁"),_T("金+160,耐力/名气/内力-2")},
+		{_T("工作"),_T("打手"),_T("13岁,内力>110,到赌场解锁"),_T("金+190,气质-1,智力/道德-3")},
+		{_T("工作"),_T("卖萌要钱"),_T("13岁"),_T("金+900,要800W大话币/1000W师门")},
+		{_T("工作"),_T("青楼跑堂"),_T("14岁,耐力>130,到青楼"),_T("金+220,气质/名气/道德-2")},
+		// 生活
+		{_T("生活"),_T("国子监"),_T("6岁直接解锁"),_T("疲劳-20")},
+		{_T("生活"),_T("在家休息"),_T("6岁直接解锁"),_T("疲劳-20")},
+		{_T("生活"),_T("皇宫"),_T("6岁直接解锁"),_T("名气+26")},
+		{_T("生活"),_T("海边"),_T("7岁直接解锁"),_T("疲劳-24")},
+		{_T("生活"),_T("野外"),_T("8岁直接解锁"),_T("疲劳-28")},
+		{_T("生活"),_T("太医院"),_T("9岁直接解锁"),_T("疲劳-32")},
+		{_T("生活"),_T("地府"),_T("10岁直接解锁"),_T("疲劳-36,玩性+1,名气-1")},
+		{_T("生活"),_T("黑市"),_T("12岁直接解锁"),_T("疲劳-38,玩性+2,智力-2")},
+		{_T("生活"),_T("赌场"),_T("13岁直接解锁"),_T("疲劳-40,玩性+2,道德-2")},
+		{_T("生活"),_T("旅游"),_T("13岁直接解锁"),_T("疲劳-280,要800W大话币/1000W师门")},
+		{_T("生活"),_T("青楼"),_T("14岁直接解锁"),_T("疲劳-40,玩性+2,气质-2")},
+	};
+
+	//在列表控件中插入列
+	m_list2.InsertColumn(em_list2Xuhao, _T("序号"), LVCFMT_CENTER, 0);
+	m_list2.InsertColumn(em_list2Caozuo, _T("操作"), LVCFMT_CENTER, 75);
+	m_list2.InsertColumn(em_list2Tiaojian, _T("解锁说明"), LVCFMT_CENTER, 150);
+	m_list2.InsertColumn(em_list2Beizhu, _T("备注"), LVCFMT_CENTER, 150);
+	
+	for (int i = 0; i < 30; ++i)
+	{
+		m_list2.InsertItem(i, _T(""));
+		m_list2.SetItemText(i, em_list2Xuhao, szText[i][em_list2Xuhao]);
+		m_list2.SetItemText(i, em_list2Caozuo, szText[i][em_list2Caozuo]);
+		m_list2.SetItemText(i, em_list2Tiaojian, szText[i][em_list2Tiaojian]);
+		m_list2.SetItemText(i, em_list2Beizhu, szText[i][em_list2Beizhu]);
+	}
+
+
+
+
 }
 
 void Cxy2simulatorDlg::InitData()
 {
+	CString szText;
+	szText.Format(_T("伴读 6岁直接解锁 金+30 叛逆-2"));
+	szText.AppendFormat(_T("做家务 6岁直接解锁 金+10 叛逆+22 气质-1"));
+	szText.AppendFormat(_T("御膳房火工 7岁,到皇宫解锁 金+30	"));
+	szText.AppendFormat(_T("实习水手 7岁,名气>10,到海边解锁 金+50 	"));
+	szText.AppendFormat(_T("驿站收银 8岁,名气>30,到野外解锁 金+80 "));
+	szText.AppendFormat(_T("太医院煎药 9岁,道德>50,到太医院解锁 金+100"));
+	szText.AppendFormat(_T("给阴魂引路 10岁,名气>70,气质>70,到地府解锁	金+120"));
+	szText.AppendFormat(_T("黑市小贩 12岁,叛逆>90,到黑市解锁 金+160,耐力/名气/内力-2"));
+	szText.AppendFormat(_T("打手 13岁,内力>110,到赌场解锁 金+190,气质-1,智力/道德-3"));
+	szText.AppendFormat(_T("卖萌要钱 13岁(要800W大话币/1000W师门) 金+900"));
+	szText.AppendFormat(_T("青楼跑堂 14岁,耐力>130,到青楼 金+220,气质/名气/道德-2"));
+	//	// 生活
+	//	em_guozijian,	// 国子监		6岁		疲劳-20"));
+	//	em_zaijia,	// 在家休息	6岁		疲劳-20
+	//	em_huanggong,	// 皇宫		6岁		名气+26	"));
+	//	em_haibian,	// 海边		7岁		疲劳-24 	
+	//	em_yewai,		// 野外		8岁		疲劳-28 "));
+	//	em_taiyiyuan,	// 太医院		9岁		疲劳-32"));
+	//	em_difu,		// 地府		10岁		疲劳-36,玩性+1,名气-1"));
+	//	em_heishi,	// 黑市		12岁		疲劳-38,玩性+2,智力-2"));
+	//	em_duchang,	// 赌场		13岁		疲劳-40,玩性+2,道德-2"));
+	//	em_lvyou,		// 旅游		13岁		疲劳-280,游戏币-800W/师门-1000W"));
+	//	em_qinglou,	// 青楼		14岁		疲劳-40,玩性+2,气质-2"));
+	//	// 学习
+	//	em_yinlv,		// 音律	直接解锁	气质+24,金-120 "));
+	//	em_meishu,	// 美术	直接解锁	耐力+24,金-120 "));
+	//	em_shiwen,	// 诗文	直接解锁	智力+24,金-120 "));
+	//	em_wushu,		// 武术	直接解锁	内力+24,金-120 "));
+	//	em_wudao,		// 舞蹈	音律30次	气质+22,耐力+2,智力+2,金-120 "));
+	//	em_jianzhu,	// 建筑	美术30次	耐力+22,内力+2,智力+2,金-120 "));
+	//	em_zongjiao,	// 宗教	诗文30次	智力+22,气质+2,内力+2,金-120 "));
+	//	em_qishu,		// 骑术	武术30次	内力+22,耐力+2,气质+2,金-120 "));
+	GetDlgItem(IDC_STATIC_SHUOMING)->SetWindowText(szText);
+	
+	//	for (int m = 0; m < em_max_oper; m++)
+	//	{
+	//		ny = 6 + m / 36;
+	//		nm = (m % 36) / 3;
+	//		CString s;
+	//		s.Format(_T("%d岁%d个月"), ny, nm);
+	//		s.Format(_T("%d"), m + 1);
+
+	//		m_list.SetItemText(m, em_shuoming, s);
+
+	//	}
 
 }
-
 
 int Cxy2simulatorDlg::AddXingdong()
 {
@@ -754,7 +871,7 @@ void Cxy2simulatorDlg::ChushiList()
 			m_list.SetItemText(i, em_jinqian, szText);
 			m_list.SetItemText(i, em_caozuo, szText);
 		}
-		else
+		else if(i >= m_xingdong)
 		{
 			CString szText(_T(""));
 			m_list.SetItemText(i, em_qizhi, szText);

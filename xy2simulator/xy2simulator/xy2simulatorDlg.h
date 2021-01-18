@@ -36,7 +36,10 @@ protected:
 public:
 	enum { em_max_oper=432};
 	enum emShuxing{ em_xuhao, em_nianling, em_qizhi, em_neili, em_zhili, em_naili, em_mingqi
-		, em_daode, em_panni, em_wanxing, em_pilao, em_jinqian, em_qigai , em_caozuo, em_shuxingmax	};
+		, em_daode, em_panni, em_wanxing, em_pilao, em_jinqian, em_qigai , em_caozuo, em_shuoming, em_shuxingmax	};
+	enum emShuoming{em_list2Xuhao, em_list2Caozuo, em_list2Tiaojian, em_list2Beizhu,
+		em_list2Max
+	};
 	enum emXingdong{
 		em_bandu,// 伴读		6岁直接解锁					金+30 叛逆-2
 		em_zuojiawu,// 做家务		6岁直接解锁					金+10 叛逆+22 气质-1
@@ -70,6 +73,7 @@ public:
 		em_jianzhu,	// 建筑	美术30次	耐力+22,内力+2,智力+2,金-120 
 		em_zongjiao,	// 宗教	诗文30次	智力+22,气质+2,内力+2,金-120 
 		em_qishu,		// 骑术	武术30次	内力+22,耐力+2,气质+2,金-120 
+		// max
 		em_caozuomax,
 	};
 	// 每次行动后属性
@@ -81,7 +85,9 @@ public:
 
 private:
 	CListCtrl m_list;
+	CListCtrl m_list2;
 	void InitList1();
+	void InitList2();
 	void InitData();
 
 public:
